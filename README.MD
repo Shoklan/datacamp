@@ -36,7 +36,7 @@
 | Importing and Managing Financial Data   | [/ImportManageFinanceR]            | {2017/10/06}   |          |
 | Working with Web Data in R              | [/WebDataInR]                      | {2017/10/13}   |          |
 | Manipulating Time Series Data in Python | [/ManipulatingTimeSeriesPython]    | ------------   |          |
-| Data Analysis in R, the data.table Way  | [/DataTableWay]                    | -------------  |          |
+| Data Analysis in R, the data.table Way  | [/DataTableWay]                    | -------------  |    A     |
 | Introduction to Time Series Analysis    | [/TimeSeriesAnalysisR]             | {2017/10/20}   |          |
 | ARIMA Modeling with R                   | [/ArimaInR]                        | {2017/10/27}   |          |
 | Manipulating Time Series: Case Study    | [/ManipulatingTimeSeriesCaseStudy] | {2017/11/03}   |          |
@@ -90,7 +90,8 @@
 | Command Line Automation in Python       | [/CMDAutomatePython]               | {2020/05/07}   |          |
 | Introduction to Airflow in Python       | [/IntroPythonAirflow]              | {2020/05/28}   |          |
 | Big Data Fundamentals with PySpark      | [/BigDataWithPySpark]              | {2020/06/17}   |          |
-| Experimental Design in Python           | [/ExperimentDesignPython]          |      {}        |          |
+| Experimental Design in Python           | [/ExperimentDesignPython]          | {2020/09/04}   |          |
+| Supervised Learning in R: Classification| [/RSupervisedLearning]             | {}             |          |
 
 
 
