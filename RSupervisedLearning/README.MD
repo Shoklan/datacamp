@@ -56,8 +56,69 @@ normalize <- function(x){
 }
 ```
 
-
 # Chapter 2: Naive Bayes
+- Your phone uses your past locations to attempt to predict your most probable future locations.
+- The probability of an event is the number of times something did happen over the number of times it could happen.
+- When events have a joint probability, these can be displayed using a Venn Diagram.
+![Joint Probability Diagram](images/joint-probability-diagram.png)
+- **Independent Events** are when one event does not influence the other event.
+- **Dependent Events** are when one event does influence the other event.
+- There algorithm **Naive Bayes** applies Bayesian methods to estimate the conditional probability of an outcome.
+```R
+library(naivebayes)
+m <- naive_bayes(lication ~ time_of_day, data = location_history)
+```
+```R
+# Compute P(A)
+p_A <- nrow(subset(where9am, location == "office")) / nrow(where9am)
+
+# Compute P(B)
+p_B <- nrow(subset(where9am, daytype == "weekday")) / nrow(where9am)
+
+# Compute the observed P(A and B)
+p_AB <- nrow(subset(where9am, location == "office" & daytype == "weekday")) / nrow(where9am)
+
+# Compute P(A | B) and print its value
+p_A_given_B <- p_AB / p_B
+p_A_given_B
+```
+```R
+# Load the naivebayes package
+library(naivebayes)
+
+# Build the location prediction model
+locmodel <- naive_bayes(location ~ daytype, data = where9am)
+
+# Predict Thursday's 9am location
+predict(locmodel, newdata = thursday9am)
+
+# Predict Saturdays's 9am location
+predict(locmodel, newdata = saturday9am)
+```
+```R
+# Obtain the predicted probabilities for Thursday at 9am
+predict(locmodel, newdata = thursday9am , type = 'prob')
+
+# Obtain the predicted probabilities for Saturday at 9am
+predict(locmodel, newdata = saturday9am, type = 'prob')
+```
+- Adding more predictors complicates the model which is why this model is called **Naive** Bayes.
+- This is because it assumes that all events are independent of one another.
+- While this is not true in the real world, bending this assumption can still net good results.
+- Another problem is that if an event exists but has never been observed then the probability is 0.
+- Therefore, anything multiplied by 0 is 0 and this method fails.
+- To work around this, is to add a very small number - usually 1 - to each event so nothing can be zero.
+- This is called a **Laplace Correction** or **Laplace Estimator**.
+- You can change this using:
+```R
+# Build a new model using the Laplace correction
+locmodel2 <- naive_bayes(location ~ daytype + hourtype, data = locations, laplace = 1)
+```
+- You can also apply this to other problems as well.
+- Naive Bayes does not deal well with unstructured or numeric data.
+- If you run into these then you will need to to some cleaning first.
+- **Binning** is a good way to deal with numeric data.
+
 
 # Chapter 3: Logistic Regression
 
