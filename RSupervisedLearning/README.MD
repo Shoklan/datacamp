@@ -225,8 +225,96 @@ full_model <- glm(donated ~ ., data = donors, family = "binomial")
 step_model <- step(null_model, scope = list(lower = null_model, upper = full_model), direction = "forward")
 ```
 
-
 # Chapter 4: Classification Trees
+- Sometimes a difficult or complex decision can be made simpler by breaking it down into a series of smaller decisions.
+- Decision trees break the data down into a set of if-else conditions.
+- This is important in areas where transparency - really interperability - are important so you can describe the model.
+- Building the tree is done via a process called **Divide and Conquer**.
+- There are different packages which can assist with making the trees.
+- We're going to use a package called `rpart`:
+```R
+library(rpart)
+m <- rpart(outcome ~ loan_amount + credit_score, data = loans, methods = "class")
+```
+```R
+# Load the rpart package
+library(rpart)
+
+# Build a lending model predicting loan outcome versus loan amount and credit score
+loan_model <- rpart(outcome ~ loan_amount + credit_score, data = loans, method = "class", control = rpart.control(cp = 0))
+
+# Make a prediction for someone with good credit
+predict(loan_model, good_credit, type = "class")
+
+# Make a prediction for someone with bad credit
+predict(loan_model, bad_credit, type="class")
+```
+- You can plot the reasons for the escalation using:
+```R
+# Load the rpart.plot package
+library(rpart.plot)
+
+# Plot the loan_model with default settings
+rpart.plot( loan_model )
+
+# Plot the loan_model with customized settings
+rpart.plot(loan_model, type = 3, box.palette = c("red", "green"), fallen.leaves = TRUE)
+```
+- While you could draw a diagonal line to create a better predictor, the Tree cannot do this since it cannot consider two features at a time.
+![Decision Tree](images/axis-split-decision-tree.png)
+- They can become quite complicated very quickly since it happily splits itself as much as needed.
+```R
+# Create a random sample of row IDs
+sample_rows <- sample(nrow(loans), nrow(loans)*.75)
+
+# Create the training dataset
+loans_train <- loans[sample_rows,]
+
+# Create the test dataset
+loans_test <- loans[-sample_rows,]
+```
+- Just like real trees, you'll want to prune decision trees to get better outcomes and make them understandable.
+- One way to prevent this is to prevent the process early called **Pre-pruning**.
+- An example of this would be stopping a tree when it reaches a certain depth.
+- Another is preventing a branch when there are less than 10 observations.
+- In **Post-Pruning**, you clear away branches with little impact on the overall accuracy.
+- The `control` parameter is where you configure the pre-pruning controls.
+- You use the function `prune()` function to perform post-pruning.
+```R
+# Swap maxdepth for a minimum split of 500
+loan_model <- rpart(outcome ~ ., data = loans_train, method = "class", control = rpart.control(cp = 0, minsplit = 500))
+
+# Run this. How does the accuracy change?
+loans_test$pred <- predict(loan_model, loans_test, type = "class")
+mean(loans_test$pred == loans_test$outcome)
+```
+- You can plot the complexity of a Decision tree using `plotcp()`.
+```R
+Examine the complexity plot
+plotcp(loan_model)
+
+# Prune the tree
+loan_model_pruned <- prune(loan_model, cp = 0.0014)
+
+# Compute the accuracy of the pruned tree
+loans_test$pred <- predict(loan_model_pruned, loans_test, type = "class")
+mean(loans_test$pred == loans_test$outcome)
+```
+- A decision tree can be grouped into a forest so you'll have a forest of decision trees.
+- To do this, you'll need the data each tree uses to "grow" from as different from the others.
+- This is usually called a **Random Forest**.
+- To use this, we'll be using the `randomForest` package.
+```R
+library(randomForest)
+
+# Build a random forest model
+loan_model <- randomForest(outcome ~ ., data = loans_train)
+
+# Compute the accuracy of the random forest
+loans_test$pred <- predict(loan_model, newdata = loans_test, type = "class")
+mean(loans_test$pred == loans_test$outcome )
+```
+
 
 # Research:
 - What other kinds of family functions does glm support?
